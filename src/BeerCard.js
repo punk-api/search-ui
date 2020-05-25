@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
 }));
-export function BeerCard({ beer }) {
+export function BeerCard({ beer, isFavorite, handleFavorite, handleUnfavorite }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleIsExpanded = () => setIsExpanded(!isExpanded);
   const classes = useStyles();
@@ -51,11 +51,13 @@ export function BeerCard({ beer }) {
     <Card>
       <Grid container>
         <Grid item xs={2}>
-          <CardMedia
-            className={classes.beer_media}
-            image={beer.image_url}
-            title=""
-          />
+          {beer.image_url && (
+            <CardMedia
+              className={classes.beer_media}
+              image={beer.image_url}
+              title=""
+            />
+          )}
         </Grid>
         <Grid item xs={10}>
           <CardHeader
@@ -74,15 +76,19 @@ export function BeerCard({ beer }) {
               <Typography paragraph>{beer.description}</Typography>
               <Typography variant="h6">Food pairings</Typography>
               <ul>
-                {beer.food_pairing.map((pairing) => (
-                  <li>{pairing}</li>
+                {beer.food_pairing.map((pairing, i) => (
+                  <li key={`${beer.id}-${i}`}>{pairing}</li>
                 ))}
               </ul>
             </CardContent>
           </Collapse>
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon />
+            <IconButton aria-label="add to favorites" onClick={() => isFavorite ? handleUnfavorite(beer) : handleFavorite(beer)}>
+              {isFavorite ? (
+                <FavoriteIcon style={{fill: "red"}} />
+              ) : (
+                <FavoriteIcon />
+              )}
             </IconButton>
             <IconButton
               className={clsx(classes.expand, {

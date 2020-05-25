@@ -1,16 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import "./App.css";
 import AppBar from "@material-ui/core/AppBar";
 
-import {
-  DataSearch,
-  ReactiveBase,
-  ReactiveList,
-  RangeInput,
-} from "@appbaseio/reactivesearch";
-import { makeStyles, fade, Typography, Toolbar, Grid } from "@material-ui/core";
+import { DataSearch, ReactiveBase } from "@appbaseio/reactivesearch";
+import { makeStyles, fade, Typography, Toolbar } from "@material-ui/core";
 
-import { SearchResults } from './SearchResults'
+import { SearchPage } from "./SearchPage";
+import { searchApi } from "./config";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -56,7 +52,7 @@ function App() {
   const classes = useStyles();
 
   return (
-    <ReactiveBase app="beer" url={process.env.REACT_APP_SEARCH_API}>
+    <ReactiveBase app="beer" url={searchApi}>
       <div className={classes.grow}>
         <AppBar position="fixed">
           <Toolbar>
@@ -67,12 +63,7 @@ function App() {
               <DataSearch
                 componentId="search"
                 URLParams
-                dataField={[
-                  "name",
-                  "tagline",
-                  "description",
-                  "food_pairing",
-                ]}
+                dataField={["name", "tagline", "description", "food_pairing"]}
                 debounce={200}
                 autosuggest={false}
                 autoFocus
@@ -82,39 +73,9 @@ function App() {
         </AppBar>
       </div>
       <div className={classes.content}>
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <RangeInput
-              componentId="abv"
-              dataField="abv"
-              URLParams
-              title="ABV"
-              showFilter
-              showHistogram
-            />
-          </Grid>
-          <Grid item xs={9}>
-            <ReactiveList
-              componentId="SearchResult"
-              dataField="id"
-              react={{
-                and: ["search", "abv"],
-              }}
-              includeFields={[
-                "id",
-                "name",
-                "tagline",
-                "description",
-                "abv",
-                "image_url",
-                "food_pairing",
-              ]}
-              pagination
-              showLoader={false}
-              render={SearchResults}
-            />
-          </Grid>
-        </Grid>
+        <Suspense fallback="Loading...">
+          <SearchPage />
+        </Suspense>
       </div>
     </ReactiveBase>
   );
