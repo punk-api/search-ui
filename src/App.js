@@ -58,6 +58,7 @@ function App() {
   const [cookies, setCookie] = useCookies(['user']);
   const [user, setUser] = React.useState(cookies['user'] || 'Guest');
   const loginAsUser = (username) => {
+    if (username.length === 0) return;
     setUser(username);
     setCookie('user', username);
   }
