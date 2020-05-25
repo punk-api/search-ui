@@ -2,6 +2,8 @@ import React, { Suspense } from "react";
 import "./App.css";
 import AppBar from "@material-ui/core/AppBar";
 
+import { useCookies } from 'react-cookie'
+
 import { DataSearch, ReactiveBase } from "@appbaseio/reactivesearch";
 import { makeStyles, fade, Typography, Toolbar } from "@material-ui/core";
 
@@ -53,7 +55,12 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const [user, setUser] = React.useState("Guest");
+  const [cookies, setCookie] = useCookies(['user']);
+  const [user, setUser] = React.useState(cookies['user'] || 'Guest');
+  const loginAsUser = (username) => {
+    setUser(username);
+    setCookie('user', username);
+  }
 
   return (
     <UserProvider value={user}>
@@ -75,7 +82,7 @@ function App() {
                 />
               </div>
               <div className={classes.grow} />
-              <UserDialog setUser={setUser} />
+              <UserDialog setUser={loginAsUser} />
             </Toolbar>
           </AppBar>
         </div>

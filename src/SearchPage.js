@@ -49,7 +49,7 @@ export function SearchPage() {
         ) : (
           <></>
         )}
-        <Button onClick={() => refetch(baseUrl)}>Refresh</Button>
+        <Button onClick={() => refetch(`${favoriteApi}/popular`)}>Refresh</Button>
       </Grid>
       <Grid item xs={9}>
         <ReactiveList
