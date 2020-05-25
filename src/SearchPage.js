@@ -15,7 +15,7 @@ export function SearchPage() {
   const { data: popular } = useAxios(`${favoriteApi}/popular`);
   return (
     <Grid container spacing={2}>
-      <Grid item xs={3}>
+      <Grid item xs={12} md={3}>
         <RangeInput
           componentId="abv"
           dataField="abv"
@@ -51,7 +51,7 @@ export function SearchPage() {
         )}
         <Button onClick={() => refetch(`${favoriteApi}/popular`)}>Refresh</Button>
       </Grid>
-      <Grid item xs={9}>
+      <Grid item xs={12} md={9}>
         <ReactiveList
           componentId="SearchResult"
           dataField="id"
