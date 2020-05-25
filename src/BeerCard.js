@@ -12,6 +12,7 @@ import {
   IconButton,
   Collapse,
   Chip,
+  Badge,
 } from "@material-ui/core";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -43,7 +44,28 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
 }));
-export function BeerCard({ beer, isFavorite, handleFavorite, handleUnfavorite }) {
+
+function FavoriteButton({ isFavorite, countFavorites }) {
+  const Icon = isFavorite ? (
+    <FavoriteIcon style={{ fill: "red" }} />
+  ) : (
+    <FavoriteIcon />
+  );
+  if (countFavorites > 0)
+    return (
+      <Badge badgeContent={countFavorites} color="primary">
+        {Icon}
+      </Badge>
+    );
+  return Icon;
+}
+
+export function BeerCard({
+  beer,
+  isFavorite,
+  handleFavorite,
+  handleUnfavorite,
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleIsExpanded = () => setIsExpanded(!isExpanded);
   const classes = useStyles();
@@ -83,12 +105,16 @@ export function BeerCard({ beer, isFavorite, handleFavorite, handleUnfavorite })
             </CardContent>
           </Collapse>
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites" onClick={() => isFavorite ? handleUnfavorite(beer) : handleFavorite(beer)}>
-              {isFavorite ? (
-                <FavoriteIcon style={{fill: "red"}} />
-              ) : (
-                <FavoriteIcon />
-              )}
+            <IconButton
+              aria-label="add to favorites"
+              onClick={() =>
+                isFavorite ? handleUnfavorite(beer) : handleFavorite(beer)
+              }
+            >
+              <FavoriteButton
+                isFavorite={isFavorite}
+                countFavorites={beer.favoriteCount}
+              />
             </IconButton>
             <IconButton
               className={clsx(classes.expand, {
