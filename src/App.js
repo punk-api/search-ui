@@ -7,6 +7,9 @@ import { makeStyles, fade, Typography, Toolbar } from "@material-ui/core";
 
 import { SearchPage } from "./SearchPage";
 import { searchApi } from "./config";
+import { UserDialog } from "./UserDialog";
+
+import { UserProvider } from "./UserContext";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -50,34 +53,39 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
+  const [user, setUser] = React.useState("Guest");
 
   return (
-    <ReactiveBase app="beer" url={searchApi}>
-      <div className={classes.grow}>
-        <AppBar position="fixed">
-          <Toolbar>
-            <Typography className={classes.title} variant="h6" noWrap>
-              Punk beers
-            </Typography>
-            <div className={classes.search}>
-              <DataSearch
-                componentId="search"
-                URLParams
-                dataField={["name", "tagline", "description", "food_pairing"]}
-                debounce={200}
-                autosuggest={false}
-                autoFocus
-              />
-            </div>
-          </Toolbar>
-        </AppBar>
-      </div>
-      <div className={classes.content}>
-        <Suspense fallback="Loading...">
-          <SearchPage />
-        </Suspense>
-      </div>
-    </ReactiveBase>
+    <UserProvider value={user}>
+      <ReactiveBase app="beer" url={searchApi}>
+        <div className={classes.grow}>
+          <AppBar position="fixed">
+            <Toolbar>
+              <Typography className={classes.title} variant="h6" noWrap>
+                Punk beers
+              </Typography>
+              <div className={classes.search}>
+                <DataSearch
+                  componentId="search"
+                  URLParams
+                  dataField={["name", "tagline", "description", "food_pairing"]}
+                  debounce={200}
+                  autosuggest={false}
+                  autoFocus
+                />
+              </div>
+              <div className={classes.grow} />
+              <UserDialog setUser={setUser} />
+            </Toolbar>
+          </AppBar>
+        </div>
+        <div className={classes.content}>
+          <Suspense fallback="Loading...">
+            <SearchPage />
+          </Suspense>
+        </div>
+      </ReactiveBase>
+    </UserProvider>
   );
 }
 

@@ -1,21 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid } from "@material-ui/core";
 import { BeerCard } from "./BeerCard";
 
 import { favoriteApi } from "./config";
 import { useAxios, refetch } from "use-axios";
 import { post, delete as del } from 'axios';
+import UserContext from "./UserContext";
 
 export function SearchResults({ loading, error, data }) {
-  const { data: favorites } = useAxios(`${favoriteApi}/`);
+  const user = useContext(UserContext);
+  const baseUrl = `${favoriteApi}/${user}`
+  const { data: favorites } = useAxios(baseUrl);
 
   const handleFavorite = async (beer) => {
-    await post(`${favoriteApi}/${beer.id}`);
-    await refetch(`${favoriteApi}/`);
+    await post(`${baseUrl}/${beer.id}`);
+    await refetch(baseUrl);
   };
   const handleUnfavorite = async (beer) => {
-    await del(`${favoriteApi}/${beer.id}`);
-    await refetch(`${favoriteApi}/`);
+    await del(`${baseUrl}/${beer.id}`);
+    await refetch(baseUrl);
   };
 
   if (loading) {
